@@ -1,26 +1,21 @@
+{% load static %}
 {% if messages %}
 <div class="w-full max-w-[400px] mx-auto mb-6 relative z-50 flex flex-col items-center">
     {% for message in messages %}
-    {% if 'have confirm' in message.message|lower %}
+    {% if 'have confirm' in message.message|lower or 'error' in message.tags %}
     <div
         class="pointer-events-auto w-full max-w-[400px] p-4 rounded-xl backdrop-blur-xl border flex items-center justify-between shadow-lg animate-fade-in mb-2
         {% if 'success' in message.tags %}bg-emerald-500/20 text-emerald-400 border-emerald-500/30{% elif 'error' in message.tags %}bg-rose-500/20 text-rose-400 border-rose-500/30{% else %}bg-[#16213e]/80 text-white border-white/10{% endif %}">
         <div class="flex items-center gap-3">
             {% if 'success' in message.tags %}
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clip-rule="evenodd" />
-            </svg>
+            <img src="{% static 'images/check_circle.svg' %}" alt="Check" class="h-5 w-5 opacity-80 shrink-0">
             {% endif %}
             <span class="font-medium text-sm">{{ message }}</span>
         </div>
         <button onclick="this.parentElement.remove()"
             class="text-current opacity-50 hover:opacity-100 transition-opacity ml-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <img src="{% static 'images/close.svg' %}" alt="Close"
+                class="h-4 w-4 opacity-50 hover:opacity-100 transition-opacity">
         </button>
     </div>
     {% endif %}

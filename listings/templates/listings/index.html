@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}All Listings - {{ APP_NAME }}{% endblock %}
 
@@ -12,11 +13,7 @@
         </div>
         {% if user.is_authenticated %}
         <a href="{% url 'listings:create' %}" class="btn-primary flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                    clip-rule="evenodd" />
-            </svg>
+            <img src="{% static 'images/plus.svg' %}" alt="Plus" class="h-5 w-5">
             Create New
         </a>
         {% endif %}
@@ -30,11 +27,7 @@
     </div>
     {% else %}
     <div class="card text-center py-20 border border-dashed border-white/20">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-slate-500 mb-4" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-        </svg>
+        <img src="{% static 'images/empty_box.svg' %}" alt="Empty" class="h-16 w-16 mx-auto opacity-50 mb-4">
         <h3 class="text-xl font-semibold mb-2">No listings found</h3>
         <p class="text-white/50 mb-6">There are currently no items listed. Be the first to create one!</p>
         {% if user.is_authenticated %}

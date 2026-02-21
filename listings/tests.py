@@ -12,7 +12,7 @@ class ListingAPITests(APITestCase):
         self.user_a = User.objects.create_user(email='usera@example.com', password='StrongPassword123!')
         self.user_b = User.objects.create_user(email='userb@example.com', password='StrongPassword123!')
         
-        self.list_create_url = reverse('api_listings_list')
+        self.list_create_url = reverse('listings:api_listings_list')
 
     def test_create_listing(self):
         """Test authenticated user can create a listing."""
@@ -29,7 +29,7 @@ class ListingAPITests(APITestCase):
     def test_update_listing(self):
         """Test user can modify their own listing."""
         listing = Listing.objects.create(seller=self.user_a, title='Old Title', description='Old', price='5.00')
-        detail_url = reverse('api_listings_detail', kwargs={'pk': listing.id})
+        detail_url = reverse('listings:api_listings_detail', kwargs={'pk': listing.id})
         
         self.client.force_authenticate(user=self.user_a)
         data = {
@@ -46,7 +46,7 @@ class ListingAPITests(APITestCase):
     def test_delete_listing(self):
         """Test user can delete their own listing."""
         listing = Listing.objects.create(seller=self.user_a, title='To Delete', description='Old', price='5.00')
-        detail_url = reverse('api_listings_detail', kwargs={'pk': listing.id})
+        detail_url = reverse('listings:api_listings_detail', kwargs={'pk': listing.id})
         
         self.client.force_authenticate(user=self.user_a)
         response = self.client.delete(detail_url)
@@ -56,7 +56,7 @@ class ListingAPITests(APITestCase):
     def test_user_a_cannot_modify_user_b_listing(self):
         """Test cross-user modification protection."""
         listing = Listing.objects.create(seller=self.user_b, title='User B Item', description='Old', price='5.00')
-        detail_url = reverse('api_listings_detail', kwargs={'pk': listing.id})
+        detail_url = reverse('listings:api_listings_detail', kwargs={'pk': listing.id})
         
         # Authenticate as User A
         self.client.force_authenticate(user=self.user_a)
@@ -72,7 +72,7 @@ class ListingAPITests(APITestCase):
     def test_user_a_cannot_delete_user_b_listing(self):
         """Test cross-user deletion protection."""
         listing = Listing.objects.create(seller=self.user_b, title='User B Item', description='Old', price='5.00')
-        detail_url = reverse('api_listings_detail', kwargs={'pk': listing.id})
+        detail_url = reverse('listings:api_listings_detail', kwargs={'pk': listing.id})
         
         # Authenticate as User A
         self.client.force_authenticate(user=self.user_a)

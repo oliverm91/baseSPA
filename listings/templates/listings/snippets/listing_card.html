@@ -12,8 +12,14 @@
             <span class="listing-price">${{ listing.price|default:"0.00" }}</span>
             {% if user.is_authenticated and listing.seller == user %}
             <div class="flex gap-2">
-                <a href="{% url 'listings:edit' listing.id %}" class="btn-secondary py-1 px-3 text-sm">Edit</a>
-                <a href="{% url 'listings:delete' listing.id %}" class="btn-danger py-1 px-3 text-sm">Del</a>
+                <a href="{% url 'listings:edit' listing.id %}"
+                    class="btn-secondary !p-1.5 rounded-lg transition-all hover:scale-105" title="Edit">
+                    <img src="{% static 'images/pencil.svg' %}" alt="Edit" class="h-6 w-6">
+                </a>
+                <a href="{% url 'listings:delete' listing.id %}"
+                    class="btn-danger !p-1.5 rounded-lg transition-all hover:scale-105" title="Delete">
+                    <img src="{% static 'images/trash.svg' %}" alt="Delete" class="h-6 w-6">
+                </a>
             </div>
             {% endif %}
         </div>

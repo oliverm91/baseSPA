@@ -193,3 +193,19 @@ class AuthenticationTests(APITestCase):
         # Try login with new password
         res2 = self.client.post(self.login_url, {'email': 'pastpass@example.com', 'password': 'NewStrongPassword123!'})
         self.assertEqual(res2.status_code, status.HTTP_200_OK)
+
+    def test_password_set_restricted_for_authenticated_users(self):
+        """Test that an authenticated user with a password cannot access the set password view."""
+        user = User.objects.create_user(email='setrest@example.com', password='StrongPassword123!')
+        EmailAddress.objects.create(user=user, email=user.email, primary=True, verified=True)
+        
+        # Log in the user using force_login for standard Django views
+        self.client.force_login(user)
+        
+        # Try to access the password set view (allauth HTML endpoint)
+        set_password_url = reverse('account_set_password')
+        response = self.client.get(set_password_url)
+        
+        # It should redirect (allauth redirects to password_change if password is set)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertIn(reverse('account_change_password'), response.url)

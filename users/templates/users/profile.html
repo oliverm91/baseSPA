@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Your Profile - {{ APP_NAME }}{% endblock %}
 
@@ -20,21 +21,21 @@
             <h3 class="text-xl font-semibold mb-4 text-pink-400">Account Details</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm text-white/50 mb-1">Email Address</label>
-                    <p class="text-white font-medium">{{ user.email }}</p>
+                    <label class="form-label">Email Address</label>
+                    <p class="form-label-value">{{ user.email }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm text-white/50 mb-1">Account Status</label>
-                    <p class="text-emerald-400 font-medium">{% if user.is_active %}Active{% else %}Inactive{% endif %}
+                    <label class="form-label">Account Status</label>
+                    <p class="form-label-value">{% if user.is_active %}Active{% else %}Inactive{% endif %}
                     </p>
                 </div>
                 <div>
-                    <label class="block text-sm text-white/50 mb-1">Joined On</label>
-                    <p class="text-white font-medium">{{ user.date_joined|date:"M d, Y" }}</p>
+                    <label class="form-label">Joined On</label>
+                    <p class="form-label-value">{{ user.date_joined|date:"M d, Y" }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm text-white/50 mb-1">Last Login</label>
-                    <p class="text-white font-medium">{{ user.last_login|date:"M d, Y H:i" }}</p>
+                    <label class="form-label">Last Login</label>
+                    <p class="form-label-value">{{ user.last_login|date:"M d, Y H:i" }}</p>
                 </div>
             </div>
         </div>
@@ -64,12 +65,9 @@
             {% endfor %}
         </div>
         {% else %}
+        {% load static %}
         <div class="bg-[#1E2536] text-center py-12 border border-dashed border-white/10 rounded-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-500 mb-3" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-            </svg>
+            <img src="{% static 'images/empty_box.svg' %}" alt="Empty" class="h-12 w-12 mx-auto opacity-50 mb-3">
             <h4 class="text-lg font-medium text-white mb-1">No listings yet</h4>
             <p class="text-[#94A3B8] text-sm mb-4">You haven't posted anything to the marketplace.</p>
         </div>

@@ -2,17 +2,23 @@
 <div class="listing-card group">
     <div
         class="h-32 bg-[#10162A] flex items-center justify-center border-b border-white/5 group-hover:bg-slate-800/50 transition-colors">
-        <img src="{% static 'images/placeholder.svg' %}" alt="Placeholder" class="listing-image !h-10 !w-10">
+        <img src="{% static 'images/placeholder.svg' %}" alt="Placeholder" class="listing-image !h-20 !w-20">
     </div>
-    <div class="p-5 flex-1 flex flex-col">
+    <div class="p-4 flex-1 flex flex-col">
         <h3 class="listing-title !text-lg !mb-1">{{ listing.title }}</h3>
         <p class="listing-description text-[#94A3B8]">
             {{ listing.description|default:"No description provided." }}</p>
         <div class="listing-header">
             <span class="listing-price">${{ listing.price|default:"0.00" }}</span>
             <div class="flex gap-2">
-                <a href="{% url 'listings:edit' listing.id %}" class="btn-secondary py-1 px-3 text-sm">Edit</a>
-                <a href="{% url 'listings:delete' listing.id %}" class="btn-danger py-1 px-3 text-sm">Del</a>
+                <a href="{% url 'listings:edit' listing.id %}"
+                    class="btn-secondary !p-0.5 rounded-lg transition-all hover:scale-105" title="Edit">
+                    <img src="{% static 'images/pencil.svg' %}" alt="Edit" class="h-6 w-6">
+                </a>
+                <a href="{% url 'listings:delete' listing.id %}"
+                    class="btn-danger !p-0.5 rounded-lg transition-all hover:scale-105" title="Delete">
+                    <img src="{% static 'images/trash.svg' %}" alt="Delete" class="h-6 w-6">
+                </a>
             </div>
         </div>
     </div>

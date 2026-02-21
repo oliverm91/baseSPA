@@ -110,4 +110,12 @@
     .listing-title {
         @apply text-xl font-bold mb-2 text-white;
     }
+
+    .form-label {
+        @apply block mb-1 text-sm text-white/50 font-semibold;
+    }
+
+    .form-label-value {
+        @apply text-white font-medium;
+    }
 }

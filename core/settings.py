@@ -177,6 +177,10 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/accounts/login/'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/users/profile/'
 
+ACCOUNT_PASSWORD_SET_REDIRECT_URL = '/users/profile/'
+ACCOUNT_PASSWORD_CHANGE_REDIRECT_URL = '/users/profile/'
+ACCOUNT_ADAPTER = 'users.adapters.CustomAccountAdapter'
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -196,6 +200,3 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = env('EMAIL_USE_TLS', cast=bool, default=False)
 EMAIL_USE_SSL = env('EMAIL_USE_SSL', cast=bool, default=False)
-
-if EMAIL_BACKEND == 'django.core.mail.backends.filebased.EmailBackend':
-    EMAIL_FILE_PATH = BASE_DIR / 'dev_emails'

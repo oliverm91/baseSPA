@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Welcome to {{ APP_NAME }}{% endblock %}
 
@@ -37,11 +38,7 @@
         <div class="card !p-6 !m-0 hover:border-pink-500/50 transition-colors duration-300">
             <div
                 class="bg-pink-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-pink-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-400" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+                <img src="{% static 'images/lock.svg' %}" alt="Lock" class="h-6 w-6 opacity-80">
             </div>
             <h3 class="text-xl font-bold mb-2">Secure Auth</h3>
             <p class="text-slate-400 text-sm leading-relaxed">Robust authentication powered by django-allauth. Includes
@@ -51,11 +48,7 @@
         <div class="card !p-6 !m-0 hover:border-purple-500/50 transition-colors duration-300">
             <div
                 class="bg-purple-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-purple-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                </svg>
+                <img src="{% static 'images/layout.svg' %}" alt="Layout" class="h-6 w-6 opacity-80">
             </div>
             <h3 class="text-xl font-bold mb-2">Beautiful UI</h3>
             <p class="text-slate-400 text-sm leading-relaxed">Modern, responsive, and gorgeous user interface built with
@@ -65,11 +58,7 @@
         <div class="card !p-6 !m-0 hover:border-indigo-500/50 transition-colors duration-300">
             <div
                 class="bg-indigo-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-indigo-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+                <img src="{% static 'images/bolt.svg' %}" alt="Bolt" class="h-6 w-6 opacity-80">
             </div>
             <h3 class="text-xl font-bold mb-2">Ready to Scale</h3>
             <p class="text-slate-400 text-sm leading-relaxed">Clean Django architecture, modern tooling (uv), DRF setup,
