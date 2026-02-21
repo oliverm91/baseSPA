@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="glass-container mt-12 mb-20">
+    <h2 class="text-center mb-8 text-[1.4rem] font-bold tracking-wide">Create an Account</h2>
+
+    <form class="space-y-5" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+
+        <div>
+            <label class="block mb-1 text-sm text-[#cbd5e1] font-semibold">Email</label>
+            {{ form.email }}
+        </div>
+        {% include "account/snippets/password_fields.html" %}
+
+        {% for error in form.non_field_errors %}
+        <div class="text-[#EF3E5C] text-[0.85rem] mb-4 font-medium">{{ error }}</div>
+        {% endfor %}
+
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+
+        <button class="btn w-full mt-4" type="submit">Sign Up</button>
+    </form>
+
+    {% include "account/snippets/google_login_button.html" %}
+
+    <div class="text-center mt-8 text-sm">
+        <span class="text-[#94A3B8]">Already have an account?</span>
+        <a href="{{ login_url }}" class="text-[#EF3E5C] font-bold hover:text-[#E03551] transition-colors ml-1">Log
+            In</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Add placeholders
+        const emailInput = document.querySelector("input[name='email']");
+        const pass1 = document.querySelector("input[name='password1']");
+        const pass2 = document.querySelector("input[name='password2']");
+
+        if (emailInput) emailInput.placeholder = "Email address";
+        if (pass1) pass1.placeholder = "Password";
+        if (pass2) pass2.placeholder = "Password (again)";
+    });
+</script>
+{% endblock %}

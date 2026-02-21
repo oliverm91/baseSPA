@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+env/
+venv/
+.ruff_cache/
+
+# Django
+.env
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Tailwind CSS
+tailwindcss.exe
+.tailwindcss/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

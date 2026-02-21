@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ APP_NAME }}{% endblock %}</title>
+    <!-- Tailwind CSS (replace with actual tailwind setup if different) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #10162A;
+            /* Match the exact dark background */
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass-container {
+            background-color: #1E2536;
+            /* Match the solid container bg */
+            border-radius: 1rem;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            background-color: #EF3E5C;
+            /* Primary pink/red */
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #E03551;
+        }
+
+        input:not([type="checkbox"]),
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem;
+            background-color: #10162A;
+            /* Dark input background */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        input:not([type="checkbox"]):focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #EF3E5C;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #E2E8F0;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    {% include "snippets/navbar.html" %}
+
+    <main class="flex-1 flex flex-col pt-8 pb-12 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% include "snippets/messages.html" %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% include "snippets/footer.html" %}
+
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@layer base {
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    textarea {
+        @apply w-full px-4 py-3 rounded-lg bg-black/30 border border-white/20 text-white text-base mt-2 transition-all focus:outline-none focus:border-[#e94560] focus:ring-2 focus:ring-[#e94560]/25;
+    }
+
+    label {
+        @apply block text-sm font-medium text-white/70;
+    }
+}
+
+.glass-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    @apply rounded-[16px] p-8 my-8 mx-auto w-11/12 max-w-[800px];
+}
+
+.btn {
+    background: #e94560;
+    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    @apply text-white border-none px-6 py-3 rounded-full font-semibold cursor-pointer transition-all flex items-center justify-center no-underline;
+}
+
+.btn:hover {
+    background: #ff5c77;
+    box-shadow: 0 6px_20px rgba(233, 69, 96, 0.6);
+}
+
+.btn-glass {
+    @apply bg-white/10 border border-white/10 shadow-none hover:bg-white/20;
+}
+
+.btn-google {
+    @apply bg-white/95 text-[#3c4043] border border-[#dadce0] shadow-sm flex items-center justify-center gap-3 hover:bg-white hover:shadow-md hover:text-[#202124];
+}
+
+.btn-danger {
+    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.35);
+    @apply bg-[#e94560]/85 border border-[#e94560] hover:bg-[#e94560];
+}
+
+.listing-card {
+    @apply bg-black/20 rounded-xl p-6 border border-white/5 transition-all duration-300 hover:bg-white/5 hover:border-white/20;
+}
+
+.listing-header {
+    @apply flex justify-between items-center border-b border-white/10 pb-2 mb-4;
+}
+
+.listing-price {
+    @apply text-xl text-[#e94560] font-bold;
+}

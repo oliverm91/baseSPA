@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+    <h1
+        class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
+        Welcome to {{ APP_NAME }}
+    </h1>
+
+    <p class="text-xl md:text-2xl text-slate-300 mb-10 max-w-2xl leading-relaxed">
+        The complete boilerplate for modern Django applications. Jumpstart your next big project with authentication,
+        Tailwind CSS, and a beautiful UI built-in.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4">
+        {% if user.is_authenticated %}
+        <a href="{% url 'listings:index' %}"
+            class="btn text-lg px-8 py-4 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:-translate-y-1 transition-all duration-300">
+            Explore Listings
+        </a>
+        <a href="{% url 'users:profile' %}"
+            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:-translate-y-1 transition-all duration-300">
+            View Profile
+        </a>
+        {% else %}
+        <a href="{% url 'account_signup' %}"
+            class="btn text-lg px-8 py-4 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:-translate-y-1 transition-all duration-300">
+            Get Started
+        </a>
+        <a href="{% url 'account_login' %}"
+            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:-translate-y-1 transition-all duration-300">
+            Sign In
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Features Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 max-w-5xl">
+        <div class="glass-container !p-6 !m-0 hover:border-pink-500/50 transition-colors duration-300">
+            <div
+                class="bg-pink-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-pink-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-400" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Secure Auth</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Robust authentication powered by django-allauth. Includes
+                Google OAuth, email verification, and password resets out of the box.</p>
+        </div>
+
+        <div class="glass-container !p-6 !m-0 hover:border-purple-500/50 transition-colors duration-300">
+            <div
+                class="bg-purple-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-purple-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Beautiful UI</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Modern, responsive, and gorgeous user interface built with
+                Tailwind CSS, featuring glassmorphism and subtle animations.</p>
+        </div>
+
+        <div class="glass-container !p-6 !m-0 hover:border-indigo-500/50 transition-colors duration-300">
+            <div
+                class="bg-indigo-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-indigo-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Ready to Scale</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Clean Django architecture, modern tooling (uv), DRF setup,
+                and best practices baked right in to help you move fast.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

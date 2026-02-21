@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+<div class="glass-container mt-12 mb-20">
+    <h2 class="text-center mb-8 text-[1.4rem] font-bold tracking-wide">Welcome Back</h2>
+
+    <form class="space-y-5" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+
+        <div>
+            <label class="block mb-1 text-sm text-[#cbd5e1] font-semibold">Email</label>
+            {{ form.login }}
+        </div>
+        <div>
+            <label class="block mb-1 text-sm text-[#cbd5e1] font-semibold">Password</label>
+            {{ form.password }}
+        </div>
+
+        <div class="flex items-center mt-2 mb-6">
+            <div class="flex items-center h-5">
+                {{ form.remember }}
+            </div>
+            <div class="ml-3 text-sm">
+                <label for="{{ form.remember.id_for_label }}" class="font-medium text-[#cbd5e1] cursor-pointer">Remember
+                    Me</label>
+            </div>
+        </div>
+
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+
+        <button class="btn w-full mt-4" type="submit">Log In</button>
+    </form>
+
+    {% include "account/snippets/google_login_button.html" %}
+
+    <div class="text-center mt-8 text-sm">
+        <a href="{% url 'account_reset_password' %}" class="text-[#94A3B8] hover:text-white transition-colors">Forgot
+            Password?</a>
+        <div class="mt-4">
+            <span class="text-[#94A3B8]">Don't have an account?</span>
+            <a href="{{ signup_url }}" class="text-[#EF3E5C] font-bold hover:text-[#E03551] transition-colors">Sign
+                Up</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const loginInput = document.querySelector("input[name='login']");
+        const passInput = document.querySelector("input[name='password']");
+        if (loginInput) loginInput.placeholder = "Email address";
+        if (passInput) passInput.placeholder = "Password";
+
+        // Add Tailwind classes to checkbox
+        const checkbox = document.querySelector("input[type='checkbox']");
+        if (checkbox) {
+            checkbox.classList.add("w-4", "h-4", "text-[#EF3E5C]", "bg-[#10162A]", "border-[#334155]", "rounded", "focus:ring-[#EF3E5C]", "focus:ring-offset-[#10162A]");
+        }
+    });
+</script>
+{% endblock %}
