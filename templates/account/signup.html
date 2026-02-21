@@ -3,7 +3,7 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-<div class="glass-container mt-12 mb-20">
+<div class="card mt-12 mb-20">
     <h2 class="text-center mb-8 text-[1.4rem] font-bold tracking-wide">Create an Account</h2>
 
     <form class="space-y-5" id="signup_form" method="post" action="{% url 'account_signup' %}">
@@ -23,7 +23,7 @@
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
 
-        <button class="btn w-full mt-4" type="submit">Sign Up</button>
+        <button class="btn-primary w-full mt-4" type="submit">Sign Up</button>
     </form>
 
     {% include "account/snippets/google_login_button.html" %}

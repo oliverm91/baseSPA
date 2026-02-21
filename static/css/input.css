@@ -2,6 +2,16 @@
 
 @layer base {
 
+    body {
+        background-color: #10162A;
+        /* Match the exact dark background */
+        color: #f8fafc;
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -15,47 +25,89 @@
     }
 }
 
-.glass-container {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    @apply rounded-[16px] p-8 my-8 mx-auto w-11/12 max-w-[800px];
-}
+@layer components {
 
-.btn {
-    background: #e94560;
-    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
-    @apply text-white border-none px-6 py-3 rounded-full font-semibold cursor-pointer transition-all flex items-center justify-center no-underline;
-}
+    /* Layout & Containers */
+    .glass-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        @apply rounded-[16px] p-8 my-8 mx-auto w-11/12 max-w-[800px];
+    }
 
-.btn:hover {
-    background: #ff5c77;
-    box-shadow: 0 6px_20px rgba(233, 69, 96, 0.6);
-}
+    .card {
+        @apply bg-[#1E2536] rounded-2xl p-10 w-full max-w-[440px] mx-auto;
+    }
 
-.btn-glass {
-    @apply bg-white/10 border border-white/10 shadow-none hover:bg-white/20;
-}
+    /* Form Components */
+    .form-input {
+        @apply w-full py-3 px-4 rounded-md bg-[#10162A] border border-white/10 text-white focus:outline-none focus:border-[#EF3E5C] text-[0.95rem] mt-2;
+    }
 
-.btn-google {
-    @apply bg-white/95 text-[#3c4043] border border-[#dadce0] shadow-sm flex items-center justify-center gap-3 hover:bg-white hover:shadow-md hover:text-[#202124];
-}
+    .form-label {
+        @apply block font-semibold text-[#cbd5e1] mb-1;
+    }
 
-.btn-danger {
-    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.35);
-    @apply bg-[#e94560]/85 border border-[#e94560] hover:bg-[#e94560];
-}
+    /* Buttons */
+    .btn {
+        background: #e94560;
+        box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        @apply text-white border-none px-6 py-3 rounded-full font-semibold cursor-pointer transition-all flex items-center justify-center no-underline;
+    }
 
-.listing-card {
-    @apply bg-black/20 rounded-xl p-6 border border-white/5 transition-all duration-300 hover:bg-white/5 hover:border-white/20;
-}
+    .btn:hover {
+        background: #ff5c77;
+        box-shadow: 0 6px_20px rgba(233, 69, 96, 0.6);
+    }
 
-.listing-header {
-    @apply flex justify-between items-center border-b border-white/10 pb-2 mb-4;
-}
+    .btn-primary {
+        @apply bg-[#EF3E5C] hover:bg-[#E03551] text-white px-6 py-3 rounded-full font-bold text-[0.95rem] transition-colors shadow-lg shadow-rose-500/20 text-center inline-block disabled:opacity-50 disabled:cursor-not-allowed;
+    }
 
-.listing-price {
-    @apply text-xl text-[#e94560] font-bold;
+    .btn-secondary {
+        @apply bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors text-center inline-block;
+    }
+
+    .btn-danger {
+        @apply text-rose-400 hover:text-rose-300 px-6 py-3 rounded-lg font-semibold border border-rose-500/30 hover:bg-rose-500/10 transition-colors text-center inline-block;
+    }
+
+    .btn-ghost {
+        @apply text-[#94A3B8] hover:text-white font-medium text-[0.95rem] transition-colors;
+    }
+
+    .btn-glass {
+        @apply bg-white/10 border border-white/10 shadow-none hover:bg-white/20;
+    }
+
+    .btn-google {
+        @apply bg-white/95 text-[#3c4043] border border-[#dadce0] shadow-sm flex items-center justify-center gap-3 hover:bg-white hover:shadow-md hover:text-[#202124];
+    }
+
+    /* Listing Components */
+    .listing-card {
+        @apply bg-black/20 rounded-xl p-6 border border-white/5 transition-all duration-300 hover:bg-white/5 hover:border-white/20;
+    }
+
+    .listing-header {
+        @apply flex justify-between items-center border-b border-white/10 pb-2 mb-4 pt-4;
+    }
+
+    .listing-price {
+        @apply text-xl text-[#e94560] font-bold;
+    }
+
+    .listing-description {
+        @apply text-white/60 text-sm mb-4 line-clamp-2 flex-1;
+    }
+
+    .listing-image {
+        @apply h-16 w-16 opacity-50;
+    }
+
+    .listing-title {
+        @apply text-xl font-bold mb-2 text-white;
+    }
 }

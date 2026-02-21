@@ -16,21 +16,17 @@
 
     <div class="flex flex-col sm:flex-row gap-4">
         {% if user.is_authenticated %}
-        <a href="{% url 'listings:index' %}"
-            class="btn text-lg px-8 py-4 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:-translate-y-1 transition-all duration-300">
+        <a href="{% url 'listings:index' %}" class="btn-primary text-lg px-8 py-4">
             Explore Listings
         </a>
-        <a href="{% url 'users:profile' %}"
-            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:-translate-y-1 transition-all duration-300">
+        <a href="{% url 'users:profile' %}" class="btn-secondary text-lg px-8 py-4">
             View Profile
         </a>
         {% else %}
-        <a href="{% url 'account_signup' %}"
-            class="btn text-lg px-8 py-4 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:-translate-y-1 transition-all duration-300">
+        <a href="{% url 'account_signup' %}" class="btn-primary text-lg px-8 py-4">
             Get Started
         </a>
-        <a href="{% url 'account_login' %}"
-            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-lg px-8 py-4 rounded-lg shadow-lg hover:-translate-y-1 transition-all duration-300">
+        <a href="{% url 'account_login' %}" class="btn-secondary text-lg px-8 py-4">
             Sign In
         </a>
         {% endif %}
@@ -38,7 +34,7 @@
 
     <!-- Features Section -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 max-w-5xl">
-        <div class="glass-container !p-6 !m-0 hover:border-pink-500/50 transition-colors duration-300">
+        <div class="card !p-6 !m-0 hover:border-pink-500/50 transition-colors duration-300">
             <div
                 class="bg-pink-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-pink-500/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-400" fill="none" viewBox="0 0 24 24"
@@ -52,7 +48,7 @@
                 Google OAuth, email verification, and password resets out of the box.</p>
         </div>
 
-        <div class="glass-container !p-6 !m-0 hover:border-purple-500/50 transition-colors duration-300">
+        <div class="card !p-6 !m-0 hover:border-purple-500/50 transition-colors duration-300">
             <div
                 class="bg-purple-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-purple-500/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24"
@@ -66,7 +62,7 @@
                 Tailwind CSS, featuring glassmorphism and subtle animations.</p>
         </div>
 
-        <div class="glass-container !p-6 !m-0 hover:border-indigo-500/50 transition-colors duration-300">
+        <div class="card !p-6 !m-0 hover:border-indigo-500/50 transition-colors duration-300">
             <div
                 class="bg-indigo-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 border border-indigo-500/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24"

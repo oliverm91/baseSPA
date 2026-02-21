@@ -1,0 +1,21 @@
+{% load static %}
+<div class="listing-card group !p-0 overflow-hidden flex flex-col">
+    <div
+        class="h-48 bg-slate-800 flex items-center justify-center border-b border-white/10 group-hover:bg-slate-700/80 transition-colors">
+        <img src="{% static 'images/placeholder.svg' %}" alt="Placeholder" class="listing-image">
+    </div>
+    <div class="p-6 flex-1 flex flex-col">
+        <h3 class="listing-title">{{ listing.title }}</h3>
+        <p class="listing-description">
+            {{ listing.description|default:"No description provided." }}</p>
+        <div class="listing-header mx-6">
+            <span class="listing-price">${{ listing.price|default:"0.00" }}</span>
+            {% if user.is_authenticated and listing.seller == user %}
+            <div class="flex gap-2">
+                <a href="{% url 'listings:edit' listing.id %}" class="btn-secondary py-1 px-3 text-sm">Edit</a>
+                <a href="{% url 'listings:delete' listing.id %}" class="btn-danger py-1 px-3 text-sm">Del</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
