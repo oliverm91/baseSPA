@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../core/constants.dart';
 import 'token_storage.dart';
+import 'auth_service.dart';
 
 /// Centralized HTTP client that automatically handles token refreshing.
 class ApiClient {

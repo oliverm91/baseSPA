@@ -28,21 +28,19 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final success = await _authService.login(
+    final result = await _authService.login(
       _emailController.text,
       _passwordController.text,
     );
 
     if (mounted) {
       setState(() => _isLoading = false);
-      if (success) {
+      if (result.success) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const MarketplaceScreen()),
         );
       } else {
-        setState(
-          () => _errorMessage = 'Login failed. Please check your credentials.',
-        );
+        setState(() => _errorMessage = result.errorMessage ?? 'Login failed.');
       }
     }
   }

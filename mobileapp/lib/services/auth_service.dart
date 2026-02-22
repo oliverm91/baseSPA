@@ -7,17 +7,28 @@ import '../screens/login_screen.dart';
 import 'token_storage.dart';
 import 'api_client.dart';
 
+/// Result of an authentication operation.
+class AuthResult {
+  final bool success;
+  final String? errorMessage;
+
+  AuthResult({required this.success, this.errorMessage});
+}
+
 /// Service for handling authentication (Login, Logout, JWT, Registration).
 class AuthService {
   // ... (keep the rest of the file unmodified, we're just updating the top imports)
   /// Performs login and stores the JWT.
-  Future<bool> login(String email, String password) async {
+  Future<AuthResult> login(String email, String password) async {
     try {
-      final response = await http.post(
-        Uri.parse('${AppConstants.apiBaseUrl}/auth/login/'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
+      final response = await http
+          .post(
+            Uri.parse('${AppConstants.apiBaseUrl}/auth/login/'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'email': email, 'password': password}),
+          )
+          .timeout(const Duration(seconds: 10));
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final accessToken = data['access_token'] ?? data['access'];
@@ -27,33 +38,52 @@ class AuthService {
             accessToken: accessToken,
             refreshToken: refreshToken,
           );
-          return true;
+          return AuthResult(success: true);
         }
+      } else if (response.statusCode == 400 || response.statusCode == 401) {
+        return AuthResult(
+          success: false,
+          errorMessage: 'Invalid credentials. Please check and try again.',
+        );
       }
-      return false;
+      return AuthResult(
+        success: false,
+        errorMessage: 'Server returned error: ${response.statusCode}',
+      );
     } catch (e) {
-      return false;
+      final errorStr = e.toString().toLowerCase();
+      if (errorStr.contains('socket') ||
+          errorStr.contains('connection') ||
+          errorStr.contains('failed to connect')) {
+        return AuthResult(
+          success: false,
+          errorMessage: 'Connection error. Is the server running?',
+        );
+      }
+      return AuthResult(success: false, errorMessage: 'An error occurred: $e');
     }
   }
 
   /// Performs registration and stores the JWT.
   /// Uses Allauth field names: email, password1, password2.
-  Future<bool> register(
+  Future<AuthResult> register(
     String email,
     String password1,
     String password2,
   ) async {
     try {
-      final response = await http.post(
-        Uri.parse('${AppConstants.apiBaseUrl}/auth/registration/'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'password1': password1,
-          'password2': password2,
-          // Removed 'username' as project uses email as identifier
-        }),
-      );
+      final response = await http
+          .post(
+            Uri.parse('${AppConstants.apiBaseUrl}/auth/registration/'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'email': email,
+              'password1': password1,
+              'password2': password2,
+              // Removed 'username' as project uses email as identifier
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -70,11 +100,28 @@ class AuthService {
             );
           }
         }
-        return true; // Registration successful, may require email verification
+        return AuthResult(success: true);
+      } else if (response.statusCode == 400) {
+        return AuthResult(
+          success: false,
+          errorMessage: 'Registration failed. Please check your data.',
+        );
       }
-      return false;
+      return AuthResult(
+        success: false,
+        errorMessage: 'Server returned error: ${response.statusCode}',
+      );
     } catch (e) {
-      return false;
+      final errorStr = e.toString().toLowerCase();
+      if (errorStr.contains('socket') ||
+          errorStr.contains('connection') ||
+          errorStr.contains('failed to connect')) {
+        return AuthResult(
+          success: false,
+          errorMessage: 'Connection error. Is the server running?',
+        );
+      }
+      return AuthResult(success: false, errorMessage: 'An error occurred: $e');
     }
   }
 

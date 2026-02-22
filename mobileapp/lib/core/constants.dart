@@ -1,11 +1,11 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 /// App-wide constants and configuration.
 class AppConstants {
   static const String appName = 'BaseSPA Mobile';
 
   static String get apiBaseUrl {
-    if (Platform.isAndroid) {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:8000';
     } else {
       return 'http://localhost:8000';

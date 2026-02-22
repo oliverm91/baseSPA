@@ -34,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _errorMessage = null;
     });
 
-    final success = await _authService.register(
+    final result = await _authService.register(
       _emailController.text,
       _passwordController.text,
       _confirmPasswordController.text,
@@ -42,7 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (mounted) {
       setState(() => _isLoading = false);
-      if (success) {
+      if (result.success) {
         final loggedIn = await _authService.isLoggedIn();
         if (loggedIn) {
           Navigator.of(context).pushReplacement(
@@ -63,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       } else {
         setState(
-          () => _errorMessage = 'Registration failed. Please try again.',
+          () => _errorMessage = result.errorMessage ?? 'Registration failed.',
         );
       }
     }

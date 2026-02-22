@@ -43,3 +43,36 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment variables
+.env
+
+# Generated code
+*.g.dart
+*.freezed.dart
+
+# iOS/macOS Build & CocoaPods
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework/
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+**/macos/Pods/
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Windows Build
+**/windows/flutter/ephemeral/
+
+# Linux Build
+**/linux/flutter/ephemeral/
+
+# Web Build
+**/web/build/
