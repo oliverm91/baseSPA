@@ -17,7 +17,6 @@ class AuthResult {
 
 /// Service for handling authentication (Login, Logout, JWT, Registration).
 class AuthService {
-  // ... (keep the rest of the file unmodified, we're just updating the top imports)
   /// Performs login and stores the JWT.
   Future<AuthResult> login(String email, String password) async {
     try {
@@ -41,10 +40,23 @@ class AuthService {
           return AuthResult(success: true);
         }
       } else if (response.statusCode == 400 || response.statusCode == 401) {
-        return AuthResult(
-          success: false,
-          errorMessage: 'Invalid credentials. Please check and try again.',
-        );
+        String errorMsg = 'Invalid credentials. Please check and try again.';
+        try {
+          final Map<String, dynamic> errorData = jsonDecode(response.body);
+          if (errorData.containsKey('non_field_errors')) {
+            errorMsg = errorData['non_field_errors'][0].toString();
+          } else if (errorData.containsKey('detail')) {
+            errorMsg = errorData['detail'].toString();
+          } else if (errorData.isNotEmpty) {
+            // Grab the first validation error if it's a field-specific error
+            final firstError = errorData.values.first;
+            errorMsg = firstError is List
+                ? firstError[0].toString()
+                : firstError.toString();
+          }
+        } catch (_) {}
+
+        return AuthResult(success: false, errorMessage: errorMsg);
       }
       return AuthResult(
         success: false,
@@ -54,10 +66,11 @@ class AuthService {
       final errorStr = e.toString().toLowerCase();
       if (errorStr.contains('socket') ||
           errorStr.contains('connection') ||
-          errorStr.contains('failed to connect')) {
+          errorStr.contains('failed to connect') ||
+          errorStr.contains('timeout')) {
         return AuthResult(
           success: false,
-          errorMessage: 'Connection error. Is the server running?',
+          errorMessage: 'Could not connect to the server.',
         );
       }
       return AuthResult(success: false, errorMessage: 'An error occurred: $e');
@@ -115,10 +128,11 @@ class AuthService {
       final errorStr = e.toString().toLowerCase();
       if (errorStr.contains('socket') ||
           errorStr.contains('connection') ||
-          errorStr.contains('failed to connect')) {
+          errorStr.contains('failed to connect') ||
+          errorStr.contains('timeout')) {
         return AuthResult(
           success: false,
-          errorMessage: 'Connection error. Is the server running?',
+          errorMessage: 'Could not connect to the server.',
         );
       }
       return AuthResult(success: false, errorMessage: 'An error occurred: $e');

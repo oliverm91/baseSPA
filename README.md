@@ -56,7 +56,11 @@ cp .env.example .env
 ```
 *(Windows CMD: `copy .env.example .env`)*
 
-Configure your `.env` with a `SECRET_KEY`, database credentials (defaults match docker), and your `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` if using OAuth.
+**Generate a Secure Secret Key:**
+Run the included script to automatically generate a cryptographic `SECRET_KEY` inside your `.env`:
+`uv run python generate_secret_key.py`
+
+Configure the rest of your `.env` with your database credentials (defaults match docker) and your `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET` if using Google OAuth.
 
 ### 5. Start the Infrastructure (Database and Email server for development)
 Spin up your PostgreSQL database and email server for development (UI client on 127.0.0.1:1080) using Docker:
@@ -72,19 +76,34 @@ uv run manage.py runserver
 ```
 
 ### 7. Setup the Mobile App
-In a new terminal window, navigate to the mobile app directory and install the packages:
+Open a new terminal window, navigate to the `mobileapp` directory, and install the Flutter packages:
 ```bash
 cd mobileapp
 flutter pub get
 ```
 
-To run the app, use the specific command for your target platform (Note: **Web is not supported**):
+#### 💻 Running on Desktop (Fastest for UI Building)
+The easiest way to test your app without bulky phone emulators is to run it as a native desktop app:
+*   **Windows:** `flutter run -d windows` *(Requires [Visual Studio](https://visualstudio.microsoft.com/) with C++ workload)*
+*   **macOS:** `flutter run -d macos` *(Requires [Xcode](https://developer.apple.com/xcode/))*
+*   **Linux:** `flutter run -d linux` *(Requires GTK and build essentials)*
 
-*   **Windows:** `flutter run -d windows` (Requires [Visual Studio](https://visualstudio.microsoft.com/) with C++ workload)
-*   **Android:** `flutter run` or select your emulator (Requires [Android Studio](https://developer.android.com/studio))
-*   **iOS:** `flutter run` or select your simulator (Requires [Xcode](https://developer.apple.com/xcode/), macOS only)
-*   **macOS:** `flutter run -d macos` (Requires [Xcode](https://developer.apple.com/xcode/), macOS only)
-*   **Linux:** `flutter run -d linux` (Requires GTK and build essentials)
+#### 📱 Running on a Phone Simulator (For final testing)
+If you want to run the app on a fully simulated iOS or Android device:
+
+**For Android (Windows/Mac/Linux):**
+1. Install [Android Studio](https://developer.android.com/studio) (Default "Standard" setup).
+2. Open Android Studio -> **SDK Manager** (top right) -> **SDK Tools** tab -> Check **Android SDK Command-line Tools (latest)** -> Apply.
+3. Run `flutter doctor --android-licenses` in a terminal (press `y` to accept all keys).
+4. Open Android Studio -> **Virtual Device Manager**.
+5. **Create Device** -> Select a phone (like "Medium Phone" or Pixel) -> Download a Recommended System Image -> **Finish**.
+6. Launch the device using the Play (▶) button.
+7. Once the phone boots up, run `flutter run` in your terminal.
+
+**For iOS (Mac only):**
+1. Install [Xcode](https://developer.apple.com/xcode/).
+2. Open the **Simulator** app manually (bundled with Xcode).
+3. Once the iPhone simulator boots up, run `flutter run` in your terminal.
 
 ---
 
