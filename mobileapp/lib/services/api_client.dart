@@ -25,18 +25,13 @@ class ApiClient {
 
     try {
       final response = await http.post(
-        Uri.parse(
-          '${AppConstants.apiBaseUrl}/auth/token/refresh/',
-        ), // Adjust if dj-rest-auth uses a different refresh URL
+        Uri.parse('${AppConstants.apiBaseUrl}/auth/token/refresh/'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'refresh': refreshToken,
-        }), // Adjust if dj-rest-auth uses a different body key
+        body: jsonEncode({'refresh': refreshToken}),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final newAccessToken = data['access_token'] ?? data['access'];
-        // Sometimes refresh also returns a new refresh token
         final newRefreshToken = data['refresh_token'] ?? data['refresh'];
 
         if (newAccessToken != null) {
@@ -47,8 +42,18 @@ class ApiClient {
           return true;
         }
       }
+
+      // If we reach here, the refresh failed (e.g., expired refresh token)
+      await AuthService.forceLogout(
+        'Session Expired',
+        'Your session has expired. Please log in again.',
+      );
       return false;
     } catch (e) {
+      await AuthService.forceLogout(
+        'Connection Error',
+        'Could not verify your session. Please try logging in again.',
+      );
       return false;
     }
   }

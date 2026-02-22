@@ -6,7 +6,9 @@ import '../screens/marketplace_screen.dart';
 
 /// Reusable Navbar for the application.
 class AppNavbar extends StatelessWidget implements PreferredSizeWidget {
-  const AppNavbar({super.key});
+  final VoidCallback? onRefresh;
+
+  const AppNavbar({super.key, this.onRefresh});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -22,8 +24,7 @@ class AppNavbar extends StatelessWidget implements PreferredSizeWidget {
         context.findAncestorWidgetOfExactType<MarketplaceScreen>() != null;
 
     return AppBar(
-      // Only show back button on Profile Screen
-      automaticallyImplyLeading: isAtProfile,
+      automaticallyImplyLeading: false,
       title: GestureDetector(
         onTap: () {
           if (!isAtMarketplace) {
@@ -39,6 +40,11 @@ class AppNavbar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
+        if (isAtMarketplace && onRefresh != null)
+          IconButton(
+            icon: const Icon(Icons.refresh, size: 28),
+            onPressed: onRefresh,
+          ),
         // Hide account icon on Login Screen
         if (!isAtLogin)
           IconButton(

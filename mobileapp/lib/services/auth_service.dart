@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../main.dart';
 import '../core/constants.dart';
+import '../screens/login_screen.dart';
 import 'token_storage.dart';
 import 'api_client.dart';
 
 /// Service for handling authentication (Login, Logout, JWT, Registration).
 class AuthService {
+  // ... (keep the rest of the file unmodified, we're just updating the top imports)
   /// Performs login and stores the JWT.
   Future<bool> login(String email, String password) async {
     try {
@@ -77,6 +81,41 @@ class AuthService {
   /// Deletes the stored JWT.
   Future<void> logout() async {
     await TokenStorage.deleteTokens();
+  }
+
+  /// Force log out the user when authentication fails and alert them.
+  static Future<void> forceLogout(String title, String message) async {
+    // 1. Clear tokens
+    await TokenStorage.deleteTokens();
+
+    // 2. Access the global navigator context
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
+
+    // 3. Show dialog
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                // 4. Navigate directly to LoginScreen
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   /// Checks if the user is currently logged in.

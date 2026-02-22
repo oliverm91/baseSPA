@@ -82,7 +82,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppNavbar(),
+      appBar: AppNavbar(onRefresh: _loadData),
       body: FutureBuilder<List<Listing>>(
         future: _listingsFuture,
         builder: (context, snapshot) {
@@ -95,92 +95,99 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
           }
 
           final listings = snapshot.data!;
-          return ListView.builder(
-            itemCount: listings.length,
-            padding: const EdgeInsets.all(8),
-            itemBuilder: (context, index) {
-              final listing = listings[index];
-              return Card(
-                elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        listing.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+          return RefreshIndicator(
+            onRefresh: () async {
+              _loadData();
+              // Wait for the future to finish
+              await _listingsFuture;
+            },
+            child: ListView.builder(
+              itemCount: listings.length,
+              padding: const EdgeInsets.all(8),
+              itemBuilder: (context, index) {
+                final listing = listings[index];
+                return Card(
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          listing.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        listing.description,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '\$${listing.price.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                            ),
-                          ),
-                          Text(
-                            listing.sellerEmail,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (_currentUserEmail != null &&
-                          _currentUserEmail == listing.sellerEmail) ...[
-                        const Divider(height: 24),
+                        const SizedBox(height: 8),
+                        Text(
+                          listing.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                        const SizedBox(height: 12),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            TextButton.icon(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => ListingFormScreen(
-                                      existingListing: listing,
-                                    ),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.edit, size: 18),
-                              label: const Text('Edit'),
+                            Text(
+                              '\$${listing.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
                             ),
-                            TextButton.icon(
-                              onPressed: () => _handleDelete(listing.id),
-                              icon: const Icon(Icons.delete, size: 18),
-                              label: const Text('Delete'),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
+                            Text(
+                              listing.sellerEmail,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic,
                               ),
                             ),
                           ],
                         ),
+                        if (_currentUserEmail != null &&
+                            _currentUserEmail == listing.sellerEmail) ...[
+                          const Divider(height: 24),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => ListingFormScreen(
+                                        existingListing: listing,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.edit, size: 18),
+                                label: const Text('Edit'),
+                              ),
+                              TextButton.icon(
+                                onPressed: () => _handleDelete(listing.id),
+                                icon: const Icon(Icons.delete, size: 18),
+                                label: const Text('Delete'),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),
