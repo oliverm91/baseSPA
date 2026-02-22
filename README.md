@@ -80,10 +80,10 @@ flutter pub get
 
 To run the app, use the specific command for your target platform (Note: **Web is not supported**):
 
-*   **Windows:** `flutter run -d windows` (Requires Visual Studio with C++ workload)
-*   **Android:** `flutter run` or select your emulator (Requires Android Studio)
-*   **iOS:** `flutter run` or select your simulator (Requires Xcode, macOS only)
-*   **macOS:** `flutter run -d macos` (Requires Xcode, macOS only)
+*   **Windows:** `flutter run -d windows` (Requires [Visual Studio](https://visualstudio.microsoft.com/) with C++ workload)
+*   **Android:** `flutter run` or select your emulator (Requires [Android Studio](https://developer.android.com/studio))
+*   **iOS:** `flutter run` or select your simulator (Requires [Xcode](https://developer.apple.com/xcode/), macOS only)
+*   **macOS:** `flutter run -d macos` (Requires [Xcode](https://developer.apple.com/xcode/), macOS only)
 *   **Linux:** `flutter run -d linux` (Requires GTK and build essentials)
 
 ---
