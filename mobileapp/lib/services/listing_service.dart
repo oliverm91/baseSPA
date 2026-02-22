@@ -1,26 +1,17 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../core/constants.dart';
 import '../models/listing.dart';
+import 'api_client.dart';
 
 /// Service for handling Marketplace Listings.
 class ListingService {
-  final _storage = const FlutterSecureStorage();
-  static const _tokenKey = 'jwt_token';
-
-  Future<Map<String, String>> _getAuthHeaders() async {
-    final token = await _storage.read(key: _tokenKey);
-    return {
-      'Content-Type': 'application/json',
-      if (token != null) 'Authorization': 'JWT $token',
-    };
-  }
-
   /// Fetches all active listings from the marketplace.
   Future<List<Listing>> fetchListings() async {
     try {
-      final response = await http.get(Uri.parse(AppConstants.listingsUrl));
+      final response = await ApiClient.get(
+        Uri.parse(AppConstants.listingsUrl),
+        requireAuth: false,
+      );
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         return data.map((item) => Listing.fromJson(item)).toList();
@@ -38,10 +29,8 @@ class ListingService {
     double price,
   ) async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await http.post(
+      final response = await ApiClient.post(
         Uri.parse('${AppConstants.listingsUrl}create/'),
-        headers: headers,
         body: jsonEncode({
           'title': title,
           'description': description,
@@ -63,10 +52,8 @@ class ListingService {
     double price,
   ) async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await http.put(
+      final response = await ApiClient.put(
         Uri.parse('${AppConstants.listingsUrl}$id/edit/'),
-        headers: headers,
         body: jsonEncode({
           'title': title,
           'description': description,
@@ -83,10 +70,8 @@ class ListingService {
   /// Deletes a listing.
   Future<bool> deleteListing(int id) async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await http.delete(
+      final response = await ApiClient.delete(
         Uri.parse('${AppConstants.listingsUrl}$id/delete/'),
-        headers: headers,
       );
 
       return response.statusCode == 204;

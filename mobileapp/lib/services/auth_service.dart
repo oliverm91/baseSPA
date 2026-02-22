@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../core/constants.dart';
+import 'token_storage.dart';
+import 'api_client.dart';
 
 /// Service for handling authentication (Login, Logout, JWT, Registration).
 class AuthService {
-  final _storage = const FlutterSecureStorage();
-  static const _tokenKey = 'jwt_token';
-
   /// Performs login and stores the JWT.
   Future<bool> login(String email, String password) async {
     try {
@@ -16,14 +14,15 @@ class AuthService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final token =
-            data['access_token'] ??
-            data['access']; // dj-rest-auth uses access_token or access
-        if (token != null) {
-          await _storage.write(key: _tokenKey, value: token);
+        final accessToken = data['access_token'] ?? data['access'];
+        final refreshToken = data['refresh_token'] ?? data['refresh'];
+        if (accessToken != null) {
+          await TokenStorage.saveTokens(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          );
           return true;
         }
       }
@@ -54,13 +53,17 @@ class AuthService {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         // Safely check for the token keys, as mandatory email verification
         // will not return a token in the 201 response.
         if (data is Map<String, dynamic>) {
-          final token = data['access_token'] ?? data['access'];
-          if (token != null) {
-            await _storage.write(key: _tokenKey, value: token);
+          final accessToken = data['access_token'] ?? data['access'];
+          final refreshToken = data['refresh_token'] ?? data['refresh'];
+
+          if (accessToken != null) {
+            await TokenStorage.saveTokens(
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            );
           }
         }
         return true; // Registration successful, may require email verification
@@ -73,35 +76,22 @@ class AuthService {
 
   /// Deletes the stored JWT.
   Future<void> logout() async {
-    await _storage.delete(key: _tokenKey);
-  }
-
-  /// Retrieves the stored JWT.
-  Future<String?> getToken() async {
-    return await _storage.read(key: _tokenKey);
+    await TokenStorage.deleteTokens();
   }
 
   /// Checks if the user is currently logged in.
   Future<bool> isLoggedIn() async {
-    final token = await getToken();
+    final token = await TokenStorage.getAccessToken();
     return token != null;
   }
 
   /// Fetches the currently authenticated user's email from the profile endpoint.
   Future<String?> fetchCurrentUserEmail() async {
     try {
-      final token = await getToken();
+      final token = await TokenStorage.getAccessToken();
       if (token == null) return null;
 
-      final response = await http.get(
-        Uri.parse(
-          '${AppConstants.apiBaseUrl}/web/profile/',
-        ), // Using the backend endpoint
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'JWT $token',
-        },
-      );
+      final response = await ApiClient.get(Uri.parse(AppConstants.profileUrl));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

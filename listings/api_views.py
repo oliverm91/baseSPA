@@ -19,9 +19,6 @@ class ListingCreateAPIView(APIView):
     def post(self, request):
         """API View to create a new listing."""
         serializer = serializers.ListingSerializer(data=request.data)
-        print(str(request))
-        print(str(request.data))
-        print(str(request.user))
         if serializer.is_valid():
             try:
                 listing = services.create_listing(
