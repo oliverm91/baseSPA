@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'django_extensions',
+    
     # Third-party apps
     'rest_framework',
     'rest_framework.authtoken',
@@ -186,7 +188,7 @@ ACCOUNT_ADAPTER = 'users.adapters.CustomAccountAdapter'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
     'ROTATE_REFRESH_TOKENS': True,
 }
 

@@ -7,6 +7,8 @@ from listings.models import Listing
 
 User = get_user_model()
 
+from allauth.account.models import EmailAddress
+
 class BaseListingTest:
     """
     Abstract-style base class for Listing tests.
@@ -14,8 +16,11 @@ class BaseListingTest:
     """
     def setUp(self):
         super().setUp()
-        self.user_a = User.objects.create_user(email=f'usera_{self.__class__.__name__}@example.com', password='StrongPassword123!')
-        self.user_b = User.objects.create_user(email=f'userb_{self.__class__.__name__}@example.com', password='StrongPassword123!')
+        self.user_a = User.objects.create_user(email=f'usera_{self.__class__.__name__.lower()}@example.com', password='StrongPassword123!')
+        EmailAddress.objects.create(user=self.user_a, email=self.user_a.email, primary=True, verified=True)
+        
+        self.user_b = User.objects.create_user(email=f'userb_{self.__class__.__name__.lower()}@example.com', password='StrongPassword123!')
+        EmailAddress.objects.create(user=self.user_b, email=self.user_b.email, primary=True, verified=True)
         self.setup_urls()
 
     def setup_urls(self):
@@ -47,6 +52,9 @@ class BaseListingTest:
         raise NotImplementedError
 
     def assert_unauthorized(self, response):
+        raise NotImplementedError
+
+    def assert_invalid_data(self, response):
         raise NotImplementedError
 
     # Shared Tests
@@ -109,9 +117,24 @@ class BaseListingTest:
         res_delete = self.perform_delete(listing.id)
         self.assert_unauthorized(res_delete)
 
+    def test_invalid_creation_data(self):
+        """Generic test for creating a listing with invalid data (e.g. negative price)."""
+        self.authenticate(self.user_a)
+        data = {'title': '', 'description': 'Missing title', 'price': '-10.00'}
+        response = self.perform_create(data)
+        self.assert_invalid_data(response)
+        
+    def test_invalid_update_data(self):
+        """Generic test for updating a listing with invalid data."""
+        listing = Listing.objects.create(seller=self.user_a, title='Valid', price='10.00')
+        self.authenticate(self.user_a)
+        data = {'price': 'invalid_string'}
+        response = self.perform_update(listing.id, data)
+        self.assert_invalid_data(response)
+
 class ListingAPITests(BaseListingTest, APITestCase):
     def setup_urls(self):
-        self.list_create_url = reverse('listings_api:api_listings_list')
+        self.list_create_url = reverse('listings_api:api_listings_create')
 
     def authenticate(self, user):
         self.client.force_authenticate(user=user)
@@ -120,11 +143,11 @@ class ListingAPITests(BaseListingTest, APITestCase):
         return self.client.post(self.list_create_url, data)
 
     def perform_update(self, pk, data):
-        url = reverse('listings_api:api_listings_detail', kwargs={'pk': pk})
+        url = reverse('listings_api:api_listings_edit', kwargs={'pk': pk})
         return self.client.put(url, data)
 
     def perform_delete(self, pk):
-        url = reverse('listings_api:api_listings_detail', kwargs={'pk': pk})
+        url = reverse('listings_api:api_listings_delete', kwargs={'pk': pk})
         return self.client.delete(url)
 
     def assert_success_create(self, response):
@@ -140,9 +163,53 @@ class ListingAPITests(BaseListingTest, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def assert_unauthorized(self, response):
+        # TODO: normalize API to return 401 for anonymous users
         # DRF returns 401 if authentication credentials are not provided, 
         # but sometimes 403 for anonymous on certain view configurations.
         self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
+
+    def assert_invalid_data(self, response):
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_real_jwt_authentication(self):
+        """Verify API correctly processes actual JWT cookies, not just force_authenticate overrides."""
+        self.client.force_authenticate(user=None) # Ensure no override is active
+        self.client.logout()
+
+        # Perform a real login to get the JWT cookies
+        login_url = reverse('rest_login')
+        login_res = self.client.post(login_url, {'email': self.user_a.email, 'password': 'StrongPassword123!'})
+        if login_res.status_code != status.HTTP_200_OK:
+            print("Real JWT Login Error:", login_res.data)
+        self.assertEqual(login_res.status_code, status.HTTP_200_OK)
+        
+        jwt_token = login_res.cookies.get('jwt-auth').value
+        self.client.cookies['jwt-auth'] = jwt_token
+        
+        # Test an endpoint requires authentication
+        data = {'title': 'Real Auth', 'description': 'JWT Test', 'price': '10.00'}
+        response = self.perform_create(data)
+        self.assert_success_create(response)
+
+    # API-specific extra tests since Web doesn't share a precise duplicate for these:
+    def test_list_listings(self):
+        """Test the marketplace API index displays active listings."""
+        Listing.objects.create(seller=self.user_a, title='Active API Item', price='10.00', is_active=True)
+        Listing.objects.create(seller=self.user_b, title='Inactive API Item', price='10.00', is_active=False)
+        url = reverse('listings_api:api_listings_list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        titles = [item['title'] for item in response.data]
+        self.assertIn('Active API Item', titles)
+        self.assertNotIn('Inactive API Item', titles)
+
+    def test_retrieve_listing(self):
+        """Test retrieving a specific listing via API."""
+        listing = Listing.objects.create(seller=self.user_a, title='My Detail Item', price='10.00', is_active=True)
+        url = reverse('listings_api:api_listings_detail', kwargs={'pk': listing.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['title'], 'My Detail Item')
 
 class ListingWebViewTests(BaseListingTest, TestCase):
     def setup_urls(self):
@@ -180,6 +247,12 @@ class ListingWebViewTests(BaseListingTest, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse('account_login'), response.url)
 
+    def assert_invalid_data(self, response):
+        # In Django Web views, invalid form submissions return a 200 OK
+        # with the form re-rendered containing the error message.
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('error', response.context)
+
     # Web-specific extra test
     def test_index_view(self):
         """Test the marketplace index displays active listings."""
@@ -189,3 +262,26 @@ class ListingWebViewTests(BaseListingTest, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Active Item')
         self.assertNotContains(response, 'Inactive Item')
+
+    def test_web_endpoint_rejects_api_auth(self):
+        """Verify that API JWT cookies do not grant access to Web UI endpoints."""
+        self.client.force_login(self.user_a)
+        self.client.logout() # Ensure completely logged out
+
+        # Get a real API token
+        login_url = reverse('rest_login')
+        login_res = self.client.post(login_url, {'email': self.user_a.email, 'password': 'StrongPassword123!'})
+        if login_res.status_code != status.HTTP_200_OK:
+            print("Web Boundary Login Error:", login_res.data)
+        self.assertEqual(login_res.status_code, status.HTTP_200_OK)
+        
+        # Clear the session cookie that dj-rest-auth might have conveniently attached, 
+        # so we *only* have the JWT token, simulating a pure Mobile Client
+        jwt_token = login_res.cookies.get('jwt-auth').value
+        self.client.cookies.clear()
+        self.client.cookies['jwt-auth'] = jwt_token
+        
+        # Access web protected endpoint
+        res = self.client.get(self.create_url)
+        self.assertEqual(res.status_code, 302)
+        self.assertIn(reverse('account_login'), res.url)
