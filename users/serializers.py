@@ -32,6 +32,8 @@ class CustomLoginSerializer(LoginSerializer):
                 
         return attrs
 
+User = get_user_model()
+
 class UserListingSerializer(serializers.Serializer):
     """Simplified listing serializer for profile view."""
     id = serializers.IntegerField()

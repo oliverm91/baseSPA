@@ -2,13 +2,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.core.exceptions import PermissionDenied
 from . import services, serializers
 
 class ListingListAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        """API View to get all active listings."""
         listings = services.get_active_listings()
         serializer = serializers.ListingSerializer(listings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -17,7 +17,6 @@ class ListingCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
-        """API View to create a new listing."""
         serializer = serializers.ListingSerializer(data=request.data)
         if serializer.is_valid():
             try:
@@ -37,7 +36,6 @@ class ListingDetailAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk):
-        """API View to get a specific listing."""
         listing = services.get_listing_by_id(pk)
         if not listing:
             return Response({"error": "Listing not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -48,11 +46,9 @@ class ListingEditAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, pk):
-        """API View to update a listing."""
         serializer = serializers.ListingSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             try:
-                from django.core.exceptions import PermissionDenied
                 listing = services.update_listing(
                     user=request.user,
                     listing_id=pk,
@@ -70,9 +66,7 @@ class ListingDeleteAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk):
-        """API View to delete a listing."""
         try:
-            from django.core.exceptions import PermissionDenied
             services.delete_listing(user=request.user, listing_id=pk)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except PermissionDenied as e:

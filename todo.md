@@ -1,2 +1,0 @@
-- create via api, test with flutter app
-- flutter app is logging with /account, not /auth/login. Make sure flutter app uses JWT whereas WEB app uses session
