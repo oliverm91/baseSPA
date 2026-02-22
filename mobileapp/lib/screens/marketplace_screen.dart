@@ -5,6 +5,7 @@ import '../widgets/app_navbar.dart';
 import '../services/auth_service.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
+import 'listing_form_screen.dart';
 
 /// Screen for displaying the Marketplace items.
 class MarketplaceScreen extends StatefulWidget {
@@ -16,12 +17,66 @@ class MarketplaceScreen extends StatefulWidget {
 
 class _MarketplaceScreenState extends State<MarketplaceScreen> {
   final _listingService = ListingService();
+  final _authService = AuthService();
+
   late Future<List<Listing>> _listingsFuture;
+  String? _currentUserEmail;
 
   @override
   void initState() {
     super.initState();
-    _listingsFuture = _listingService.fetchListings();
+    _loadData();
+  }
+
+  void _loadData() {
+    setState(() {
+      _listingsFuture = _listingService.fetchListings();
+    });
+    _authService.fetchCurrentUserEmail().then((email) {
+      if (mounted) {
+        setState(() => _currentUserEmail = email);
+      }
+    });
+  }
+
+  Future<void> _handleDelete(int id) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Listing'),
+        content: const Text('Are you sure you want to delete this listing?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final success = await _listingService.deleteListing(id);
+      if (mounted) {
+        if (success) {
+          _loadData(); // Reload the list
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Listing deleted successfully')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to delete listing'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -91,6 +146,36 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                           ),
                         ],
                       ),
+                      if (_currentUserEmail != null &&
+                          _currentUserEmail == listing.sellerEmail) ...[
+                        const Divider(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton.icon(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ListingFormScreen(
+                                      existingListing: listing,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.edit, size: 18),
+                              label: const Text('Edit'),
+                            ),
+                            TextButton.icon(
+                              onPressed: () => _handleDelete(listing.id),
+                              icon: const Icon(Icons.delete, size: 18),
+                              label: const Text('Delete'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -106,9 +191,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
 
           if (mounted) {
             if (loggedIn) {
-              // TODO: Navigate to Create Item screen
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Create Listing coming soon!')),
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ListingFormScreen()),
               );
             } else {
               showDialog(

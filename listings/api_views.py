@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from . import services, serializers
 
-class ListingListView(APIView):
+class ListingListAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -13,12 +13,15 @@ class ListingListView(APIView):
         serializer = serializers.ListingSerializer(listings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class ListingCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request):
         """API View to create a new listing."""
-        if not request.user.is_authenticated:
-            return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
-            
         serializer = serializers.ListingSerializer(data=request.data)
+        print(str(request))
+        print(str(request.data))
+        print(str(request.user))
         if serializer.is_valid():
             try:
                 listing = services.create_listing(
@@ -27,18 +30,14 @@ class ListingListView(APIView):
                     description=serializer.validated_data['description'],
                     price=serializer.validated_data['price']
                 )
-                # Return the full listing data using the serializer again
                 response_serializer = serializers.ListingSerializer(listing)
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
             except ValueError as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ListingDetailView(APIView):
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        return [IsAuthenticated()]
+class ListingDetailAPIView(APIView):
+    permission_classes = [AllowAny]
 
     def get(self, request, pk):
         """API View to get a specific listing."""
@@ -47,6 +46,9 @@ class ListingDetailView(APIView):
             return Response({"error": "Listing not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = serializers.ListingSerializer(listing)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ListingEditAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def put(self, request, pk):
         """API View to update a listing."""
@@ -66,6 +68,9 @@ class ListingDetailView(APIView):
             except ValueError as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ListingDeleteAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk):
         """API View to delete a listing."""

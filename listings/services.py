@@ -1,4 +1,6 @@
 from .models import Listing
+from django.core.exceptions import PermissionDenied
+
 
 def get_active_listings():
     """Returns all currently active listings ordered by creation date."""
@@ -6,6 +8,9 @@ def get_active_listings():
 
 def create_listing(seller, title, description, price):
     """Creates a new listing with the given seller and details."""
+    if not seller or not seller.is_authenticated:
+        raise PermissionDenied("Authentication is required to create a listing.")
+        
     if float(price) <= 0:
         raise ValueError("Price must be greater than zero.")
     
@@ -23,7 +28,9 @@ def get_listing_by_id(listing_id):
 
 def update_listing(user, listing_id, title=None, description=None, price=None):
     """Updates a listing only if the user is the seller."""
-    from django.core.exceptions import PermissionDenied
+    if not user or not user.is_authenticated:
+        raise PermissionDenied("Authentication is required to modify a listing.")
+        
     listing = get_listing_by_id(listing_id)
     if not listing:
         raise ValueError("Listing not found.")
@@ -45,7 +52,9 @@ def update_listing(user, listing_id, title=None, description=None, price=None):
 
 def delete_listing(user, listing_id):
     """Deletes a listing only if the user is the seller."""
-    from django.core.exceptions import PermissionDenied
+    if not user or not user.is_authenticated:
+        raise PermissionDenied("Authentication is required to delete a listing.")
+        
     listing = get_listing_by_id(listing_id)
     if not listing:
         raise ValueError("Listing not found.")

@@ -54,23 +54,21 @@ class AuthService {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final token = data['access_token'] ?? data['access'];
-        if (token != null) {
-          await _storage.write(key: _tokenKey, value: token);
-          return true;
+
+        // Safely check for the token keys, as mandatory email verification
+        // will not return a token in the 201 response.
+        if (data is Map<String, dynamic>) {
+          final token = data['access_token'] ?? data['access'];
+          if (token != null) {
+            await _storage.write(key: _tokenKey, value: token);
+          }
         }
+        return true; // Registration successful, may require email verification
       }
       return false;
     } catch (e) {
       return false;
     }
-  }
-
-  /// Placeholder for Google Login.
-  Future<bool> loginWithGoogle() async {
-    // Simulation for UI demonstration
-    await Future.delayed(const Duration(seconds: 1));
-    return false;
   }
 
   /// Deletes the stored JWT.
@@ -87,5 +85,31 @@ class AuthService {
   Future<bool> isLoggedIn() async {
     final token = await getToken();
     return token != null;
+  }
+
+  /// Fetches the currently authenticated user's email from the profile endpoint.
+  Future<String?> fetchCurrentUserEmail() async {
+    try {
+      final token = await getToken();
+      if (token == null) return null;
+
+      final response = await http.get(
+        Uri.parse(
+          '${AppConstants.apiBaseUrl}/web/profile/',
+        ), // Using the backend endpoint
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'JWT $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['email'];
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 }

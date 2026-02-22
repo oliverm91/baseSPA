@@ -149,6 +149,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
@@ -158,6 +159,11 @@ REST_AUTH = {
     'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh-token',
     'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
     'LOGIN_SERIALIZER': 'users.serializers.CustomLoginSerializer',
+}
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
 }
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -171,14 +177,14 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 
-LOGIN_REDIRECT_URL = '/users/profile/'
+LOGIN_REDIRECT_URL = '/web/profile/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/accounts/login/'
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/users/profile/'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/web/profile/'
 
-ACCOUNT_PASSWORD_SET_REDIRECT_URL = '/users/profile/'
-ACCOUNT_PASSWORD_CHANGE_REDIRECT_URL = '/users/profile/'
+ACCOUNT_PASSWORD_SET_REDIRECT_URL = '/web/profile/'
+ACCOUNT_PASSWORD_CHANGE_REDIRECT_URL = '/web/profile/'
 ACCOUNT_ADAPTER = 'users.adapters.CustomAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {

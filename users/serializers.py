@@ -4,7 +4,6 @@ from dj_rest_auth.serializers import LoginSerializer
 from rest_framework import serializers
 from allauth.account.adapter import get_adapter
 from allauth.account import app_settings as allauth_settings
-from allauth.account.utils import email_address_exists
 from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
@@ -15,7 +14,7 @@ class CustomRegisterSerializer(RegisterSerializer):
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
         if allauth_settings.UNIQUE_EMAIL:
-            if email and email_address_exists(email):
+            if email and User.objects.filter(email__iexact=email).exists():
                 raise serializers.ValidationError(
                     _("A user is already registered with this e-mail address.")
                 )

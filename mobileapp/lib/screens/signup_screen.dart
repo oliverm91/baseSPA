@@ -43,29 +43,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (mounted) {
       setState(() => _isLoading = false);
       if (success) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MarketplaceScreen()),
-        );
+        final loggedIn = await _authService.isLoggedIn();
+        if (loggedIn) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const MarketplaceScreen()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Registration successful! Please check your email to verify your account.',
+              ),
+              duration: Duration(seconds: 4),
+            ),
+          );
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+          );
+        }
       } else {
         setState(
           () => _errorMessage = 'Registration failed. Please try again.',
-        );
-      }
-    }
-  }
-
-  Future<void> _handleGoogleAuth() async {
-    setState(() => _isLoading = true);
-    final success = await _authService.loginWithGoogle();
-    if (mounted) {
-      setState(() => _isLoading = false);
-      if (success) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MarketplaceScreen()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Google Auth coming soon!')),
         );
       }
     }
@@ -145,15 +143,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text('SIGN UP'),
-              ),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: _isLoading ? null : _handleGoogleAuth,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.all(16),
-                ),
-                icon: const Icon(Icons.g_mobiledata, size: 28),
-                label: const Text('Continue with Google'),
               ),
               const SizedBox(height: 24),
               Row(
