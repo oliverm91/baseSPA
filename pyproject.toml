@@ -1,9 +1,30 @@
 [project]
 name = "basespa"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Django-based Single Page Application (SPA) foundation with Django Web UI and Flutter mobile app."
 readme = "README.md"
 requires-python = ">=3.14"
+authors = [
+    { name = "Oliver Mohr Bonometti" }
+]
+keywords = [
+    "django",
+    "flutter",
+    "spa",
+    "framework",
+    "oauth",
+    "jwt",
+    "rest-framework"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django :: 6.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+]
 dependencies = [
     "cryptography>=46.0.5",
     "dj-rest-auth>=7.1.1",
